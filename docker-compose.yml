@@ -1,11 +1,18 @@
+redis:
+  build: redis/
+  restart: always
+  ports:
+    - "6379:6379"
 elasticsearch:
   image: elasticsearch:latest
+  restart: always
   command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
     - "9300:9300"
 logstash:
   image: logstash:latest
+  restart: always
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
@@ -13,8 +20,10 @@ logstash:
     - "5000:5000"
   links:
     - elasticsearch
+    - redis
 kibana:
   build: kibana/
+  restart: always
   volumes:
     - ./kibana/config/:/opt/kibana/config/
   ports:
